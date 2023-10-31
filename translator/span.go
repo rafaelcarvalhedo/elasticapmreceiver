@@ -27,6 +27,9 @@ func ConvertSpan(event *modelpb.APMEvent, dest ptrace.Span) {
 	}
 	dest.SetName(span.Name)
 	dest.SetKind(ConvertSpanKind(span.Kind))
+	if dest.Kind() == ptrace.SpanKindUnspecified {
+		dest.SetKind(ptrace.SpanKindServer)
+	}
 	start, end := GetStartAndEndTimestamps(event.Timestamp, event.Event.Duration)
 	if start != nil && end != nil {
 		dest.SetStartTimestamp(*start)
