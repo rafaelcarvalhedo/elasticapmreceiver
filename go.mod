@@ -1,4 +1,4 @@
-module github.com/ldgrp/elasticapmreceiver
+module github.com/flachesis/elasticapmreceiver
 
 go 1.20
 
