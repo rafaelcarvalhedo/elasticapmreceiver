@@ -19,7 +19,7 @@ import (
 
 	"github.com/elastic/apm-data/input/elasticapm"
 	"github.com/elastic/apm-data/model/modelpb"
-	"github.com/flachesis/elasticapmreceiver/translator"
+	"github.com/rafaelcarvalhedo/elasticapmreceiver/translator"
 )
 
 type elasticapmReceiver struct {

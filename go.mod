@@ -6,7 +6,6 @@ toolchain go1.23.6
 
 require (
 	github.com/elastic/apm-data v0.1.1-0.20230803060036-9180b59d7888
-	github.com/flachesis/elasticapmreceiver v0.96.0
 	go.opentelemetry.io/collector/component v0.119.0
 	go.opentelemetry.io/collector/config/confighttp v0.119.0
 	go.opentelemetry.io/collector/consumer v1.25.0
