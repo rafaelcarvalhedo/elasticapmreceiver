@@ -34,7 +34,7 @@ Extend `builder-config.yaml` to include a receiver configuration for the Elastic
 
 ```yaml
 receivers:
-  - gomod: github.com/ldgrp/elasticapmreceiver v0.0.0
+  - gomod: github.com/flachesis/elasticapmreceiver v0.0.0
 ```
 
 Then build the binary:

@@ -4,23 +4,22 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"sync"
 
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"
-	"go.opentelemetry.io/collector/obsreport"
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.opentelemetry.io/collector/receiver"
+	"go.opentelemetry.io/collector/receiver/receiverhelper"
 	"go.uber.org/zap"
 	"golang.org/x/sync/semaphore"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/elastic/apm-data/input/elasticapm"
 	"github.com/elastic/apm-data/model/modelpb"
-	"github.com/ldgrp/elasticapmreceiver/translator"
+	"github.com/flachesis/elasticapmreceiver/translator"
 )
 
 type elasticapmReceiver struct {
@@ -30,11 +29,11 @@ type elasticapmReceiver struct {
 	shutdownWG sync.WaitGroup
 
 	nextConsumer  consumer.Traces
-	traceReceiver *obsreport.Receiver
-	settings      receiver.CreateSettings
+	traceReceiver *receiverhelper.ObsReport
+	settings      receiver.Settings
 }
 
-func newElasticAPMReceiver(cfg *Config, settings receiver.CreateSettings) (*elasticapmReceiver, error) {
+func newElasticAPMReceiver(cfg *Config, settings receiver.Settings) (*elasticapmReceiver, error) {
 	r := &elasticapmReceiver{
 		cfg:      cfg,
 		settings: settings,
@@ -42,7 +41,7 @@ func newElasticAPMReceiver(cfg *Config, settings receiver.CreateSettings) (*elas
 	}
 
 	var err error
-	r.traceReceiver, err = obsreport.NewReceiver(obsreport.ReceiverSettings{
+	r.traceReceiver, err = receiverhelper.NewObsReport(receiverhelper.ObsReportSettings{
 		ReceiverID:             settings.ID,
 		Transport:              "http",
 		ReceiverCreateSettings: settings,
@@ -54,10 +53,9 @@ func newElasticAPMReceiver(cfg *Config, settings receiver.CreateSettings) (*elas
 	return r, nil
 }
 
-func (r *elasticapmReceiver) startHTTPServer(cfg *confighttp.HTTPServerSettings, host component.Host) error {
+func (r *elasticapmReceiver) startHTTPServer(ctx context.Context, cfg *confighttp.ServerConfig, host component.Host) error {
 	r.settings.Logger.Info("Starting HTTP server", zap.String("endpoint", cfg.Endpoint))
-	var hln net.Listener
-	hln, err := cfg.ToListener()
+	_, err := cfg.ToListener(ctx)
 	if err != nil {
 		return err
 	}
@@ -66,16 +64,14 @@ func (r *elasticapmReceiver) startHTTPServer(cfg *confighttp.HTTPServerSettings,
 	go func() {
 		defer r.shutdownWG.Done()
 
-		if errHTTP := r.serverHTTP.Serve(hln); errHTTP != http.ErrServerClosed {
-			host.ReportFatalError(errHTTP)
-		}
 	}()
 	return nil
 }
 
 func (r *elasticapmReceiver) Start(ctx context.Context, host component.Host) error {
 	var err error
-	r.serverHTTP, err = r.cfg.HTTPServerSettings.ToServer(
+	r.serverHTTP, err = r.cfg.ServerConfig.ToServer(
+		ctx,
 		host,
 		r.settings.TelemetrySettings,
 		r.httpMux,
@@ -85,7 +81,7 @@ func (r *elasticapmReceiver) Start(ctx context.Context, host component.Host) err
 		return err
 	}
 
-	err = r.startHTTPServer(r.cfg.HTTPServerSettings, host)
+	err = r.startHTTPServer(ctx, r.cfg.ServerConfig, host)
 	return err
 }
 
@@ -102,7 +98,7 @@ func (r *elasticapmReceiver) Shutdown(ctx context.Context) error {
 
 func (r *elasticapmReceiver) registerTraceConsumer(nextConsumer consumer.Traces) error {
 	if nextConsumer == nil {
-		return component.ErrNilNextConsumer
+		return nil
 	}
 
 	r.nextConsumer = nextConsumer
@@ -184,7 +180,7 @@ func (r *elasticapmReceiver) processBatch(reader io.Reader, baseEvent *modelpb.A
 	return events, nil
 }
 
-func (r *elasticapmReceiver) handleTraces(w http.ResponseWriter, req *http.Request, baseEvent *modelpb.APMEvent, tracesReceiver *obsreport.Receiver) (*ptrace.Traces, error) {
+func (r *elasticapmReceiver) handleTraces(w http.ResponseWriter, req *http.Request, baseEvent *modelpb.APMEvent, tracesReceiver *receiverhelper.ObsReport) (*ptrace.Traces, error) {
 	events, err := r.processBatch(req.Body, baseEvent)
 
 	if err != nil {
