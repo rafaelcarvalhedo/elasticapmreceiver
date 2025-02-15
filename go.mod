@@ -1,4 +1,4 @@
-module github.com/flachesis/elasticapmreceiver
+module github.com/rafaelcarvalhedo/elasticapmreceiver
 
 go 1.22.0
 
@@ -6,6 +6,7 @@ toolchain go1.23.6
 
 require (
 	github.com/elastic/apm-data v0.1.1-0.20230803060036-9180b59d7888
+	github.com/flachesis/elasticapmreceiver v0.96.0
 	go.opentelemetry.io/collector/component v0.119.0
 	go.opentelemetry.io/collector/config/confighttp v0.119.0
 	go.opentelemetry.io/collector/consumer v1.25.0
@@ -41,7 +42,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/prometheus/procfs v0.11.1 // indirect
+	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
 	github.com/santhosh-tekuri/jsonschema v1.2.4 // indirect
 	go.elastic.co/apm/v2 v2.2.0 // indirect
