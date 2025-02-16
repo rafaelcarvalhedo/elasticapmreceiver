@@ -110,6 +110,8 @@ go.opentelemetry.io/collector/client v1.25.0 h1:7IS+b3Xm2ymgmQj9UbnZmVF4jIw6F7tQ
 go.opentelemetry.io/collector/client v1.25.0/go.mod h1:IPyOnO7K0ztuZOV1i+WXShvq4tpbLp45tTDdIDvlZvM=
 go.opentelemetry.io/collector/component v0.119.0 h1:ZVp9myF1Bc4BLa1V4C15Jy/VpqKPPhvbxpe9pP1mPMc=
 go.opentelemetry.io/collector/component v0.119.0/go.mod h1:wtuWxFl+Ky9E/5+t2FwHoLyADDiBFFDdx8fN3fEs0n8=
+go.opentelemetry.io/collector/component/componentstatus v0.119.0 h1:H8isEInGaWhnDfuG1Ax663dlsPgF4aM20sgraM6HmSI=
+go.opentelemetry.io/collector/component/componentstatus v0.119.0/go.mod h1:Hr7scHUFPhyT32IkzKq06cdhRH9jMKvnKbDVYRUEnqE=
 go.opentelemetry.io/collector/component/componenttest v0.119.0 h1:nVlBmKSu56zO/qCcNgDYCQsRoWAL+NPkrkIPAbapdQM=
 go.opentelemetry.io/collector/component/componenttest v0.119.0/go.mod h1:H6KVzLkNhB/deEijLcq91Kjgs9Oshx2ZsFAwaMcuTLs=
 go.opentelemetry.io/collector/config/configauth v0.119.0 h1:w/Ln2l6TSgadtRLEZ7mlmOsW/6Q4ITIrjwxR7Tbnfzg=
@@ -238,8 +240,8 @@ google.golang.org/genproto/googleapis/rpc v0.0.0-20241202173237-19429a94021a h1:
 google.golang.org/genproto/googleapis/rpc v0.0.0-20241202173237-19429a94021a/go.mod h1:5uTbfoYQed2U9p3KIj2/Zzm02PYhndfdmML0qC3q3FU=
 google.golang.org/grpc v1.70.0 h1:pWFv03aZoHzlRKHWicjsZytKAiYCtNS0dHbXnIdq7jQ=
 google.golang.org/grpc v1.70.0/go.mod h1:ofIJqVKDXx/JiXrwr2IG4/zwdH9txy3IlF40RmcJSQw=
-google.golang.org/protobuf v1.36.4 h1:6A3ZDJHn/eNqc1i+IdefRzy/9PokBTPvcqMySR7NNIM=
-google.golang.org/protobuf v1.36.4/go.mod h1:9fA7Ob0pmnwhb644+1+CVWFRbNajQ6iRojtC/QF5bRE=
+google.golang.org/protobuf v1.36.5 h1:tPhr+woSbjfYvY6/GPufUoYizxw1cF/yFoxJ2fmpwlM=
+google.golang.org/protobuf v1.36.5/go.mod h1:9fA7Ob0pmnwhb644+1+CVWFRbNajQ6iRojtC/QF5bRE=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0/go.mod h1:WDnlLJ4WF5VGsH/HVa3CI79GS0ol3YnhVnKP89i0kNg=

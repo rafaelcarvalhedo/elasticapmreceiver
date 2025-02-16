@@ -2,12 +2,17 @@ package elasticapmreceiver
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"sync"
 
+	"github.com/elastic/apm-data/input/elasticapm"
+	"github.com/elastic/apm-data/model/modelpb"
+	"github.com/rafaelcarvalhedo/elasticapmreceiver/translator"
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/component/componentstatus"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/pdata/ptrace"
@@ -16,10 +21,6 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/sync/semaphore"
 	"google.golang.org/protobuf/types/known/timestamppb"
-
-	"github.com/elastic/apm-data/input/elasticapm"
-	"github.com/elastic/apm-data/model/modelpb"
-	"github.com/rafaelcarvalhedo/elasticapmreceiver/translator"
 )
 
 type elasticapmReceiver struct {
@@ -55,7 +56,7 @@ func newElasticAPMReceiver(cfg *Config, settings receiver.Settings) (*elasticapm
 
 func (r *elasticapmReceiver) startHTTPServer(ctx context.Context, cfg *confighttp.ServerConfig, host component.Host) error {
 	r.settings.Logger.Info("Starting HTTP server", zap.String("endpoint", cfg.Endpoint))
-	_, err := cfg.ToListener(ctx)
+	listener, err := cfg.ToListener(ctx)
 	if err != nil {
 		return err
 	}
@@ -63,7 +64,13 @@ func (r *elasticapmReceiver) startHTTPServer(ctx context.Context, cfg *confightt
 	r.shutdownWG.Add(1)
 	go func() {
 		defer r.shutdownWG.Done()
+		go func() {
+			defer r.shutdownWG.Done()
 
+			if errHTTP := r.serverHTTP.Serve(listener); !errors.Is(errHTTP, http.ErrServerClosed) && errHTTP != nil {
+				componentstatus.ReportStatus(host, componentstatus.NewFatalErrorEvent(errHTTP))
+			}
+		}()
 	}()
 	return nil
 }

@@ -7,6 +7,7 @@ toolchain go1.23.6
 require (
 	github.com/elastic/apm-data v0.1.1-0.20230803060036-9180b59d7888
 	go.opentelemetry.io/collector/component v0.119.0
+	go.opentelemetry.io/collector/component/componentstatus v0.119.0
 	go.opentelemetry.io/collector/config/confighttp v0.119.0
 	go.opentelemetry.io/collector/consumer v1.25.0
 	go.opentelemetry.io/collector/pdata v1.25.0
@@ -66,6 +67,6 @@ require (
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241202173237-19429a94021a // indirect
 	google.golang.org/grpc v1.70.0 // indirect
-	google.golang.org/protobuf v1.36.4
+	google.golang.org/protobuf v1.36.5
 	howett.net/plist v1.0.0 // indirect
 )
